@@ -65,6 +65,6 @@ curl -XGET "http://127.0.0.1:9000/export_rs3_file?file_name=target.rs3&project=r
 # Citation
 
 Zeldes, Amir (2016).
-[rstWeb - A Browser-based Annotation Interface for Rhetorical Structure Theory and Discourse Relations](http://aclweb.org/anthology/N/N16/N16-3001.pdf).
+[rstWeb - A Browser-based Annotation Interface for Rhetorical Structure Theory and Discourse Relations](http://aclweb.org/anthology/N/N16/N16-3001.pdf).  
 In: Proceedings of NAACL-HLT 2016 System Demonstrations.
 San Diego, CA, 1-5.
