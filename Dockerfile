@@ -6,28 +6,30 @@
 # run it on a publicly reachalble server if you store any 'valualble'
 # data in rstWeb.
 
-FROM nlpbox/nlpbox-base:16.04
+FROM ubuntu:18.04
 
-RUN apt-get update -y && apt-get upgrade -y && \
-    apt-get install python-pip phantomjs apache2 elinks -y && \
-    pip2 install cherrypy selenium
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install python-pip phantomjs elinks -y
+RUN pip2 install cherrypy selenium
+RUN apt-get install git -y
+
 
 # Instead of Amir Zeldes' original repo, we will use
-# the 'rst-workbench' branch of my fork, which adds a simple REST
-# API for im/exporting rs3 files.
+# the 'add-rest-api' branch of my fork, which adds a simple REST
+# API for im/exporting/converting rs3 files.
 WORKDIR /opt
 RUN git clone https://github.com/arne-cl/rstWeb.git && \
     mv rstWeb rstweb
 
 WORKDIR /opt/rstweb
-RUN git checkout rst-workbench
+RUN git checkout add-rest-api
 
 # start_local.py is not intended to be run as a server, so we have to change
 # its IP address to make it work inside a docker container.
 WORKDIR /opt/rstweb
-RUN head -n -1 start_local.py > start_local_docker.py && \
-    echo "cherrypy.server.socket_host = '0.0.0.0'" >> start_local_docker.py && \
-    echo "cherrypy.quickstart(Root(), '/', conf)" >> start_local_docker.py
+RUN sed 's/import cherrypy$/import cherrypy; cherrypy.server.socket_host = "0.0.0.0"/g' start_local.py >> start_local_docker.py
+
+RUN pip2 install cherrypy_cors routes
 
 EXPOSE 8080
 ENTRYPOINT ["python"]
