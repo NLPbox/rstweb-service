@@ -5,8 +5,8 @@ This docker container allows you to build, install and run the
 Rhetorical Structure Theory annotation tool (Zeldes 2016)
 in a docker container.
 
-Specifically, this will run the version 2.0.0 of `rstWeb` with an additional
-REST API for importing, opening and exporting rs3 files.
+Specifically, this will run the version 2.0.3 of `rstWeb` with an additional
+REST API for importing, exporting and converting rs3 files (to PNG images).
 
 Unlike [rstweb-docker](https://github.com/NLPbox/rstweb-docker),
 this container runs the "local" version of `rstWeb`.
@@ -29,25 +29,24 @@ listens on port 8080, but we'll map it to port 9000 of our host system
 (`localhost` / `127.0.0.1`).
 
 Now, you can create a project called `rst-workbench` in the running
-`rstWeb` instance:
+`rstWeb` instance. We'll use [httpie](https://httpie.org/) for the examples.
 
 ```
-curl -XPOST http://127.0.0.1:9000/add_project -F name="rst-workbench"
+http POST "http://127.0.0.1:9000/api/projects/rst-workbench"
 ```
 
-The server will reply with the list of projects that are currently available
-in `rstWeb`:
+To list the currently stored projects, call:
 
 ```
-{"projects": ["rst-workbench"]}
+http GET "http://127.0.0.1:9000/api/projects"
 ```
 
 To import the rs3 file `/path/to/source.rs3` into the project `rst-workbench`
 and store it there under the name `target.rs3`, type:
 
 ```
-curl -XPOST http://127.0.0.1:9000/import_rs3_file \
-     -F rs3_file=@/path/to/source.rs3 -F project="rst-workbench" -F file_name=target.rs3
+http --form POST "http://127.0.0.1:9000/api/documents/rst-workbench/target.rs3" \
+    rs3_file@/path/to/source.rs3
 ```
 
 Afterwards, you can open the document `target.rs3` in your browser
@@ -59,7 +58,7 @@ button in the Structure editor or retrieve it programmatically (this is
 what `rst-workbench` does under the hood):
 
 ```
-curl -XGET "http://127.0.0.1:9000/export_rs3_file?file_name=target.rs3&project=rst-workbench"
+http GET "http://127.0.0.1:8080/api/documents/rst-workbench/target.rs3"
 ```
 
 # Citation
