@@ -10,7 +10,7 @@ FROM ubuntu:18.04
 
 RUN apt-get update -y && apt-get upgrade -y && \
     apt-get install git python-pip phantomjs elinks -y && \
-    pip2 install cherrypy cherrypy_cors routes selenium
+    pip2 install cherrypy routes selenium
 
 # Instead of Amir Zeldes' original repo, we will use
 # the 'add-rest-api' branch of my fork, which adds a simple REST
