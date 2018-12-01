@@ -10,13 +10,13 @@ FROM ubuntu:18.04
 
 RUN apt-get update -y && apt-get upgrade -y && \
     apt-get install git python-pip phantomjs elinks -y && \
-    pip2 install cherrypy routes selenium
+    pip2 install cherrypy routes selenium pexpect pytest requests imagehash
 
 # Instead of Amir Zeldes' original repo, we will use
 # the 'add-rest-api' branch of my fork, which adds a simple REST
 # API for im/exporting/converting rs3 files.
 WORKDIR /opt
-RUN git clone https://github.com/arne-cl/rstWeb.git && \
+RUN git clone https://github.com/arne-cl/rstWeb && \
     mv rstWeb rstweb
 
 WORKDIR /opt/rstweb
