@@ -16,7 +16,7 @@ RUN apt-get update -y && apt-get upgrade -y && \
 # the 'add-rest-api' branch of my fork, which adds a simple REST
 # API for im/exporting/converting rs3 files.
 WORKDIR /opt
-RUN git clone https://github.com/arne-cl/rstWeb && \
+RUN git clone https://github.com/arne-cl/rstWeb.git && \
     mv rstWeb rstweb
 
 WORKDIR /opt/rstweb
