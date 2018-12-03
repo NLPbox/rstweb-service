@@ -1,0 +1,30 @@
+FROM alpine:3.8 as builder
+
+RUN apk update && \
+    apk add git build-base py2-pip python-dev zlib-dev jpeg-dev lapack-dev gfortran && \
+    pip2 install Cython numpy cherrypy routes selenium pexpect pytest requests
+
+WORKDIR /opt
+RUN git clone https://github.com/PyWavelets/pywt.git PyWavelets
+
+WORKDIR /opt/PyWavelets
+RUN python setup.py build && pip2 install imagehash
+
+# Instead of Amir Zeldes' original repo, we will use
+# the 'add-rest-api' branch of my fork, which adds a simple REST
+# API for im/exporting/converting rs3 files.
+WORKDIR /opt
+RUN git clone https://github.com/arne-cl/rstWeb.git && \
+    mv rstWeb rstweb
+
+WORKDIR /opt/rstweb
+RUN git checkout add-rest-api
+
+# start_local.py is not intended to be run as a server, so we have to change
+# its IP address to make it work inside a docker container.
+WORKDIR /opt/rstweb
+RUN sed 's/import cherrypy$/import cherrypy; cherrypy.server.socket_host = "0.0.0.0"/g' start_local.py >> start_local_docker.py
+
+EXPOSE 8080
+ENTRYPOINT ["python"]
+CMD ["start_local_docker.py"]
