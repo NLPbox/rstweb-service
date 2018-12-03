@@ -7,4 +7,4 @@ install:
   - docker build -t rstweb-service .
 
 script:
-  - docker run --entrypoint=/bin/bash -ti rstweb-service -c py.test tests/test_api.py
+  - docker run --entrypoint=/bin/sh -ti rstweb-service -c py.test tests/test_api.py
