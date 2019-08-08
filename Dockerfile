@@ -9,23 +9,27 @@
 FROM ubuntu:18.04
 
 RUN apt-get update -y && apt-get upgrade -y && \
-    apt-get install git python-pip phantomjs elinks -y && \
+    apt-get install git python-pip phantomjs elinks wget firefox -y && \
     pip2 install cherrypy routes selenium pexpect pytest requests imagehash
 
-# Instead of Amir Zeldes' original repo, we will use
-# the 'add-rest-api' branch of my fork, which adds a simple REST
-# API for im/exporting/converting rs3 files.
+# This is a fork of Amir Zeldes' original rstWeb that adds a REST API.
 WORKDIR /opt
-RUN git clone https://github.com/arne-cl/rstWeb.git && \
-    mv rstWeb rstweb
+RUN git clone https://github.com/arne-cl/rstWeb.git rstweb
 
-WORKDIR /opt/rstweb
-RUN git checkout add-rest-api
+# Install geckodriver (for using 'headless' Firefox).
+WORKDIR /usr/bin
+RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz && \
+    tar -xvzf geckodriver-v0.24.0-linux64.tar.gz && \
+    rm geckodriver-v0.24.0-linux64.tar.gz
 
 # start_local.py is not intended to be run as a server, so we have to change
 # its IP address to make it work inside a docker container.
+#
+# Remove all *.pyc files (incl. those in subdirectories).
+# Otherwise, pytest will throw an 'import file mismatch' error.
 WORKDIR /opt/rstweb
-RUN sed 's/import cherrypy$/import cherrypy; cherrypy.server.socket_host = "0.0.0.0"/g' start_local.py >> start_local_docker.py
+RUN sed 's/import cherrypy$/import cherrypy; cherrypy.server.socket_host = "0.0.0.0"/g' start_local.py >> start_local_docker.py && \
+    find -name '*.pyc' -exec rm {} \;
 
 EXPOSE 8080
 ENTRYPOINT ["python"]
