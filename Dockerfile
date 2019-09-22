@@ -12,15 +12,15 @@ RUN apt-get update -y && apt-get upgrade -y && \
     apt-get install git python-pip phantomjs elinks wget firefox -y && \
     pip2 install cherrypy routes selenium pexpect pytest requests imagehash
 
-# This is a fork of Amir Zeldes' original rstWeb that adds a REST API.
-WORKDIR /opt
-RUN git clone https://github.com/arne-cl/rstWeb.git rstweb
-
 # Install geckodriver (for using 'headless' Firefox).
 WORKDIR /usr/bin
 RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz && \
     tar -xvzf geckodriver-v0.24.0-linux64.tar.gz && \
     rm geckodriver-v0.24.0-linux64.tar.gz
+
+# This is a fork of Amir Zeldes' original rstWeb that adds a REST API.
+WORKDIR /opt
+RUN git clone https://github.com/arne-cl/rstWeb.git rstweb
 
 # start_local.py is not intended to be run as a server, so we have to change
 # its IP address to make it work inside a docker container.
