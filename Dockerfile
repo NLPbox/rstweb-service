@@ -20,7 +20,7 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckod
 
 # This is a fork of Amir Zeldes' original rstWeb that adds a REST API.
 WORKDIR /opt
-RUN git clone https://github.com/arne-cl/rstWeb.git rstweb
+RUN git clone https://github.com/arne-cl/rstWeb rstweb
 
 # start_local.py is not intended to be run as a server, so we have to change
 # its IP address to make it work inside a docker container.
