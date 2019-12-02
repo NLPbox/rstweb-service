@@ -20,7 +20,7 @@ RUN wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckod
 
 # This is a fork of Amir Zeldes' original rstWeb that adds a REST API.
 WORKDIR /opt
-RUN git clone https://github.com/arne-cl/rstWeb.git rstweb
+RUN git clone https://github.com/arne-cl/rstWeb rstweb
 
 # Remove all *.pyc files (incl. those in subdirectories).
 # Otherwise, pytest will throw an 'import file mismatch' error.
